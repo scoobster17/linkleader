@@ -5,10 +5,11 @@ const ipcRenderer = require('electron').ipcRenderer;
 // Exposed protected methods in the render process
 contextBridge.exposeInMainWorld(
     // Allowed 'ipcRenderer' methods
-    'bridge', {
+    'electronApi', {
         // From main to render
-        sendSettings: (message: any) => {
-            ipcRenderer.on('sendSettings', message);
-        }
+        sendProfiles: (message: any) => {
+            ipcRenderer.on('sendProfiles', message);
+        },
+        openLinkInProfile: (...args: string[]) => ipcRenderer.invoke('openLinkInProfile', ...args),
     }
 );

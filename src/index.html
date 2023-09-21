@@ -9,19 +9,6 @@
   <body>
     <h1>LinkLeader</h1>
     <ol id="profileList"></ol>
-    <script>
-      window.bridge.sendSettings((event, settings) => {
-          console.log(settings);
-          
-          const profileList = document.getElementById('profileList');
-          if (!profileList) { return; };
-
-          settings.forEach((profile) => {
-            const li = document.createElement('li');
-            li.innerText = `${profile.id} : ${profile.name} : ${profile.user_name}`
-            profileList.appendChild(li);
-          });
-      });
-  </script>
+    <script src="./renderer.js"></script>
   </body>
 </html>

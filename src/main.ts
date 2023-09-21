@@ -1,12 +1,27 @@
 // Modules to control application life and create native browser window
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { spawn } from 'node:child_process';
 
 type FilteredProfile = { id: string; name: string; user_name: string };
 
+const openLinkInProfile = (url: string, profileEmail: string) => {
+  spawn(
+    '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome',
+    [
+      url,
+      `--profile-email=${profileEmail}`,
+    ]
+  );
+};
+
 const createWindow = (profiles: FilteredProfile[]) => {
+  ipcMain.handle('openLinkInProfile', (_event, url, email) => {
+    openLinkInProfile(url, email);
+  })
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -18,11 +33,11 @@ const createWindow = (profiles: FilteredProfile[]) => {
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
-    .then(() => { mainWindow.webContents.send('sendSettings', profiles); })
+    .then(() => { mainWindow.webContents.send('sendProfiles', profiles); })
     .then(() => { mainWindow.show(); });
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished
