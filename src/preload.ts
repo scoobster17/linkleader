@@ -1,14 +1,14 @@
-// preload.js
+// Import the necessary Electron modules
+const contextBridge = require('electron').contextBridge;
+const ipcRenderer = require('electron').ipcRenderer;
 
-// All the Node.js APIs are available in the preload process.
-// It has the same sandbox as a Chrome extension.
-window.addEventListener('DOMContentLoaded', () => {
-    const replaceText = (selector: string, text: string) => {
-      const element = document.getElementById(selector)
-      if (element) element.innerText = text
+// Exposed protected methods in the render process
+contextBridge.exposeInMainWorld(
+    // Allowed 'ipcRenderer' methods
+    'bridge', {
+        // From main to render
+        sendSettings: (message: any) => {
+            ipcRenderer.on('sendSettings', message);
+        }
     }
-  
-    for (const dependency of ['chrome', 'node', 'electron']) {
-        replaceText(`${dependency}-version`, `${process.versions[dependency]}`)   
-    }
-  })
+);

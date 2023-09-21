@@ -5,8 +5,9 @@
   "private": true,
   "main": "dist/main.js",
   "scripts": {
-    "build": "tsc && cp ./src/index.html ./dist",
-    "start:dev": "electron ./dist/main.js",
+    "build": "pnpm clean && tsc && cp ./src/index.html ./dist",
+    "clean": "rm -rf ./dist",
+    "start:dev": "pnpm build && electron ./dist/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
