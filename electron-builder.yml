@@ -1,0 +1,9 @@
+appId: "LinkLeader"
+dmg:
+  title: "LinkLeader | Made by Phil Gibbins"
+fileAssociations:
+  ext:
+    - 'html'
+    - 'htm'
+files:
+  - "build/**/*"

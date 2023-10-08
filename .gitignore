@@ -1,5 +1,9 @@
 node_modules/
-dist/
+dist*/
+build/*
+
+# OS
+**/.DS_Store
 
 # test files
 **/Local State*

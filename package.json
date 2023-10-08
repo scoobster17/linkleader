@@ -3,21 +3,25 @@
   "version": "0.0.0",
   "description": "",
   "private": true,
-  "main": "dist/main.js",
+  "main": "build/main.js",
   "scripts": {
-    "build": "pnpm clean && tsc && cp ./src/index.html ./dist",
-    "clean": "rm -rf ./dist",
+    "build": "pnpm clean && tsc && cp ./src/index.html ./build",
+    "clean": "rm -rf ./build && rm -rf ./dist",
+    "package": "pnpm build && electron-builder",
     "start:dev": "pnpm build && electron ./dist/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "homepage": "./",
   "keywords": [],
   "author": "Phil Gibbins <scoobster17@hotmail.co.uk>",
   "license": "MIT",
-  "dependencies": {
-    "electron": "^26.2.1"
-  },
   "devDependencies": {
     "@types/node": "^20.6.3",
+    "electron": "^26.2.1",
+    "electron-builder": "^24.6.4",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "electron-log": "^4.4.8"
   }
 }

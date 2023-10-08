@@ -7,8 +7,8 @@ contextBridge.exposeInMainWorld(
     // Allowed 'ipcRenderer' methods
     'electronApi', {
         // From main to render
-        sendProfiles: (message: any) => {
-            ipcRenderer.on('sendProfiles', message);
+        sendWebData: (message: any) => {
+            ipcRenderer.on('sendWebData', message);
         },
         openLinkInProfile: (...args: string[]) => ipcRenderer.invoke('openLinkInProfile', ...args),
     }
