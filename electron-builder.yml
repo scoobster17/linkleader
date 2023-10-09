@@ -5,5 +5,17 @@ fileAssociations:
   ext:
     - 'html'
     - 'htm'
+protocols:
+  - name: 'Web site URL'
+    schemes:
+      - 'http'
+      - 'https'
+  - name: 'Local file URL'
+    schemes:
+      - 'file'
 files:
   - "build/**/*"
+mac:
+  extendInfo:
+    NSUserActivityTypes:
+      - 'NSUserActivityTypeBrowsingWeb'
