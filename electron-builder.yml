@@ -2,9 +2,24 @@ appId: "LinkLeader"
 dmg:
   title: "LinkLeader | Made by Phil Gibbins"
 fileAssociations:
-  ext:
-    - 'html'
-    - 'htm'
+  - ext: 'htm'
+    name: 'HTML document'
+    role: 'Viewer'
+  - ext: 'public.htm'
+    name: 'HTML document'
+    role: 'Viewer'
+  - ext: 'html'
+    name: 'HTML document'
+    role: 'Viewer'
+  - ext: 'public.html'
+    name: 'HTML document'
+    role: 'Viewer'
+  - ext: 'xhtml'
+    name: 'HTML document'
+    role: 'Viewer'
+  - ext: 'public.xhtml'
+    name: 'XHTML document'
+    role: 'Viewer'
 protocols:
   - name: 'Web site URL'
     schemes:

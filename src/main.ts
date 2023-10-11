@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, protocol } from 'electron';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -91,6 +91,8 @@ app.on('open-url', (event, url) => {
   }).catch(console.error);
 })
 
+app.setAsDefaultProtocolClient('https');
+
 // using string concatenation as for some reason, os.homeDir disappears when using path.resolve
 const filePath = `${os.homedir()}/Library/Application Support/Google/Chrome/Local State`;
 const data = fs.readFileSync(filePath, 'utf-8');
@@ -102,9 +104,34 @@ const filteredChromeProfiles: FilteredProfile[] = Object.entries(chromeData.prof
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-// app.whenReady().then(() => {
-//   createWindow(filteredChromeProfiles);
-// }).catch(console.error);
+app.whenReady().then(() => {
+  protocol.handle('app', (req) => {
+    const { host, pathname } = new URL(req.url)
+    log.info('handle1', host, pathname)
+
+    // if (host === 'bundle') {
+      // if (pathname === '/') {
+        return new Response('<h1>hello, world</h1>', {
+          headers: { 'content-type': 'text/html' }
+        })
+      // }
+    // }
+
+      // // NB, this does not check for paths that escape the bundle, e.g.
+      // // app://bundle/../../secret_file.txt
+      // return net.fetch(pathToFileURL(join(__dirname, pathname)).toString())
+    // } else if (host === 'api') {
+      // return net.fetch('https://api.my-server.com/' + pathname, {
+      //   method: req.method,
+      //   headers: req.headers,
+      //   body: req.body
+      // })
+    // }
+  })
+
+  // createWindow(filteredChromeProfiles);
+  if (BrowserWindow.getAllWindows().length === 0) createWindow(filteredChromeProfiles, '"url"');
+}).catch(console.error);
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
