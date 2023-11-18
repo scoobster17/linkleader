@@ -24,9 +24,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
         const { profiles, url } = webData;
 
+        urlSpan.innerText = '';
         urlSpan.insertAdjacentHTML('beforeend', url);
+
+        console.log(profiles);
     
+        profileList.innerHTML = '';
         profiles.forEach((profile) => {
+          console.log(profile);
           const li = document.createElement('li');
           li.setAttribute('data-profile-email', profile.user_name);
           li.insertAdjacentHTML('beforeend', `${profile.id} : ${profile.name} : ${profile.user_name}`);
