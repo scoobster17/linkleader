@@ -8,8 +8,19 @@
   </head>
   <body>
     <h1>LinkLeader</h1>
-    <p>With which profile do you want to open <span id="urlSpan"></span>?</p>
-    <ol id="profileList"></ol>
+    <section>
+      <h2>Pick a profile</h2>
+      <p>With which profile do you want to open <span id="urlSpan"></span>?</p>
+      <ol id="profileList"></ol>
+    </section>
+    <section>
+      <h2>Create a rule</h2>
+      <form action="#">
+        <select name="profileDropdown" id="profileDropdown">
+        </select>
+        <input type="submit" value="Create rule and open link with selected profile" />
+      </form>
+    </section>
     <script src="./renderer.js"></script>
   </body>
 </html>

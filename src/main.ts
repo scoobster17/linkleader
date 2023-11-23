@@ -5,10 +5,16 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import log from 'electron-log';
+import Store from './store';
 
-type FilteredProfile = { id: string; name: string; user_name: string };
+type FilteredProfile = {
+  id: string;
+  name: string;
+  user_name: string;
+};
 
 let urlToOpen: string;
+const store = new Store();
 
 /**
  *
@@ -16,6 +22,7 @@ let urlToOpen: string;
  * @param profileEmail 
  */
 const openLinkInProfile = (url: string, profileEmail: string) => {
+  BrowserWindow.getAllWindows()[0]?.close();
   spawn(
     '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome',
     [
@@ -37,6 +44,11 @@ const createWindow = (profiles: FilteredProfile[], url?: string) => {
     openLinkInProfile(url, email);
   })
 
+  ipcMain.removeHandler('updateConfig');
+  ipcMain.handle('updateConfig', (_event, key, value) => {
+    store.set(key, value);
+  })
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -47,24 +59,38 @@ const createWindow = (profiles: FilteredProfile[], url?: string) => {
   });
 
   mainWindow.loadFile(path.join(__dirname, 'index.html'))
-    .then(() => { mainWindow.webContents.send('sendWebData', { profiles, url }); })
+    .then(() => { mainWindow.webContents.send('sendWebData', { profiles, url, rules: store.get('rules') }); })
     .then(() => { mainWindow.show(); });
 
   // mainWindow.webContents.openDevTools()
 }
 
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) createWindow(filteredChromeProfiles, urlToOpen)
-})
+// app.on('activate', () => {
+//   const rules = store.get('rules');
+//   const index = rules.findIndex(({url}) => url === urlToOpen);
+//   if (index !== -1) {
+//     openLinkInProfile(rules[index].url, rules[index].profileEmail);
+//     return;
+//   }
+
+//   if (BrowserWindow.getAllWindows().length === 0) createWindow(filteredChromeProfiles, urlToOpen)
+// })
 
 app.on('open-url', (event, url) => {
   log.info('open url', url, JSON.stringify(event));
 
   if (app.isReady()) {
+    const rules = store.get('rules');
+    const index = rules.findIndex(({url: urlToCheck}) => urlToCheck === url);
+    if (index !== -1) {
+      openLinkInProfile(rules[index].url, rules[index].profileEmail);
+      return;
+    }
+
     if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow(filteredChromeProfiles, urlToOpen)
+      createWindow(filteredChromeProfiles, url)
     } else {
-      BrowserWindow.getAllWindows()[0].webContents.send('sendWebData', { profiles: filteredChromeProfiles, url });
+      BrowserWindow.getAllWindows()[0].webContents.send('sendWebData', { profiles: filteredChromeProfiles, url, rules: store.get('rules') });
     }
   } else {
     urlToOpen = url;
@@ -82,7 +108,14 @@ const filteredChromeProfiles: FilteredProfile[] = Object.entries(chromeData.prof
 // console.log(filteredChromeProfiles);
 
 app.whenReady().then(() => {
-  log.info('whenReady')
+  log.info('whenReady');
+
+  const rules = store.get('rules');
+  const index = rules.findIndex(({url}) => url === urlToOpen);
+  if (index !== -1) {
+    openLinkInProfile(rules[index].url, rules[index].profileEmail);
+    return;
+  }
 
   if (BrowserWindow.getAllWindows().length === 0) createWindow(filteredChromeProfiles, urlToOpen);
 }).catch(console.error);

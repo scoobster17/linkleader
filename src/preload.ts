@@ -11,5 +11,6 @@ contextBridge.exposeInMainWorld(
             ipcRenderer.on('sendWebData', message);
         },
         openLinkInProfile: (...args: string[]) => ipcRenderer.invoke('openLinkInProfile', ...args),
+        updateConfig: (...args: string[]) => ipcRenderer.invoke('updateConfig', ...args),
     }
 );
